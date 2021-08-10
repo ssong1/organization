@@ -1,0 +1,17 @@
+insert into department(id, code, name) values (1, '0000', 'ABC회사');
+insert into department(id, code, name, parent_id) values (2, 'D100', '경영지원본부', 1);
+insert into department(id, code, name, parent_id) values (3, 'D110', '인사팀', 2);
+insert into department(id, code, name, parent_id) values (4, 'D120', '회계팀', 2);
+insert into department(id, code, name, parent_id) values (5, 'S100', 'SW 개발본부', 1);
+insert into department(id, code, name, parent_id) values (6, 'S110', '플랫폼개발부', 5);
+insert into department(id, code, name, parent_id) values (7, 'S111', '비즈플랫폼팀', 6);
+insert into department(id, code, name, parent_id) values (8, 'S112', '비즈서비스팀', 6);
+insert into department(id, code, name, parent_id) values (9, 'S113', '그룹웨어개발팀', 6);
+insert into department(id, code, name, parent_id) values (10, 'S120', '비즈서비스개발부', 5);
+insert into department(id, code, name, parent_id) values (11, 'S121', '플랫폼서비스팀', 10);
+insert into department(id, code, name, parent_id) values (12, 'S122', '모바일개발팀', 10);
+insert into member(id, name, is_manager, department_id) values (100, '회장님', true, 1);
+insert into member(id, name, is_manager, department_id) values (101, '인사팀장', true, 3);
+insert into member(id, name, is_manager, department_id) values (102, '인사팀사원', false, 3);
+insert into member(id, name, is_manager, department_id) values (103, '회계팀장', true, 4);
+insert into member(id, name, is_manager, department_id) values (104, '전표처리맨', false, 4);
