@@ -29,7 +29,7 @@ public class OrganizationApiController {
 
     @GetMapping(path = "/api/organizations")
     public Object getOrganizations(
-        @ModelAttribute OrganizationSearchRequestDto request) throws IllegalAccessException {
+        @ModelAttribute OrganizationSearchRequestDto request) {
         String deptCode = request.getDeptCode(); // 기준 부서코드
         Boolean deptOnly = request.getDeptOnly(); // 부서만
         String searchType = request.getSearchType(); // 검색 대상(dept: 부서, member: 부서원)
