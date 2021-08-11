@@ -4,15 +4,13 @@ import static java.util.stream.Collectors.groupingBy;
 
 import com.example.organization.domain.department.Department;
 import com.example.organization.domain.department.DepartmentRepository;
-import com.example.organization.dto.request.DepartmentManipulateRequestDto;
-import com.example.organization.dto.response.DepartmentManipulateResponseDto;
 import com.example.organization.dto.DepartmentDto;
 import com.example.organization.dto.OrganizationDto;
+import com.example.organization.dto.request.DepartmentManipulateRequestDto;
+import com.example.organization.dto.response.DepartmentManipulateResponseDto;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrganizationService {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DepartmentRepository departmentRepository;
 
     /**
      * 모든 부서와 멤버 찾기
      *
-     * @return
+     * @return OrganizationDto
      */
     @Transactional(readOnly = true)
     public OrganizationDto findAll() {
@@ -37,7 +34,7 @@ public class OrganizationService {
     /**
      * 모든 부서만 찾기
      *
-     * @return
+     * @return DepartmentDto
      */
     @Transactional(readOnly = true)
     public DepartmentDto findDeptOnly() {
@@ -47,8 +44,8 @@ public class OrganizationService {
     /**
      * deptCode로 부서와 멤버 찾기
      *
-     * @param deptCode
-     * @return
+     * @param deptCode 부서코드
+     * @return OrganizationDto
      */
     @Transactional(readOnly = true)
     public OrganizationDto findDeptCode(String deptCode) {
@@ -59,8 +56,8 @@ public class OrganizationService {
     /**
      * deptCode로 부서만 찾기
      *
-     * @param deptCode
-     * @return
+     * @param deptCode 부서코드
+     * @return DepartmentDto
      */
     @Transactional(readOnly = true)
     public DepartmentDto findDeptCodeDeptOnly(String deptCode) {
@@ -71,8 +68,8 @@ public class OrganizationService {
     /**
      * 키워드로 부서와 멤버 찾기
      *
-     * @param searchKeyword
-     * @return
+     * @param searchKeyword 키워드
+     * @return OrganizationDto
      */
     @Transactional(readOnly = true)
     public OrganizationDto findAllByKeyword(String searchKeyword) {
@@ -83,13 +80,13 @@ public class OrganizationService {
     /**
      * 키워드로 부서만 찾기
      *
-     * @param searchKeyword
-     * @return
+     * @param searchKeyword 키워드
+     * @return DepartmentDto
      */
     @Transactional(readOnly = true)
     public DepartmentDto findDeptOnlyByKeyword(String searchKeyword) {
         List<Department> departments = departmentRepository.findAllByNameContaining(searchKeyword);
-        if (departments.size() == 0 || departments == null) {
+        if (departments.size() == 0) {
             throw new IllegalArgumentException("입력하신 keyword에 해당하는 부서가 없습니다.");
         }
 
@@ -120,8 +117,8 @@ public class OrganizationService {
     /**
      * 부서 추가
      *
-     * @param dto
-     * @return
+     * @param dto 부서 추가, 수정, 삭제 요청 dto
+     * @return DepartmentManipulateResponseDto 부서 추가, 수정, 삭제 응답 dto
      */
     @Transactional
     public DepartmentManipulateResponseDto addDepartment(DepartmentManipulateRequestDto dto) {
@@ -132,21 +129,22 @@ public class OrganizationService {
             .name(dto.getName())
             .parent(parent)
             .build();
-        Integer id = null;
+        Integer id;
         try {
             id = departmentRepository.saveAndFlush(newDept).getId();
         } catch (DataIntegrityViolationException e) {
             throw new IllegalArgumentException("deptCode가 중복됩니다.");
         }
-        Department added = departmentRepository.findById(id).get();
+        Department added = departmentRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("부서 추가 중 오류 발생"));
         return dtoCreator(added, "정상적으로 추가되었습니다.");
     }
 
     /**
      * 부서 수정
      *
-     * @param dto
-     * @return
+     * @param dto 부서 추가, 수정, 삭제 요청 dto
+     * @return DepartmentManipulateResponseDto 부서 추가, 수정, 삭제 응답 dto
      */
     @Transactional
     public DepartmentManipulateResponseDto modifyDepartment(Integer deptId,
@@ -167,8 +165,8 @@ public class OrganizationService {
     /**
      * 부서 삭제
      *
-     * @param id
-     * @return
+     * @param id 부서 id
+     * @return DepartmentManipulateResponseDto 부서 추가, 수정, 삭제 응답 dto
      */
     @Transactional
     public DepartmentManipulateResponseDto deleteDepartment(Integer id) {
