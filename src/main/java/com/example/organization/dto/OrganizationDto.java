@@ -6,11 +6,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.Getter;
-import lombok.Setter;
 
 @JsonInclude(Include.NON_NULL)
 @Getter
-@Setter
 public class OrganizationDto {
 
     private Integer id;
@@ -40,6 +38,10 @@ public class OrganizationDto {
         this.code = code;
         this.name = name;
         this.parentId = parentId;
+    }
+
+    public void setChildren(List<Object> children) {
+        this.children = children;
     }
 
 }
