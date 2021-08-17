@@ -4,10 +4,13 @@ import static java.util.stream.Collectors.groupingBy;
 
 import com.example.organization.domain.department.Department;
 import com.example.organization.domain.department.DepartmentRepository;
+import com.example.organization.domain.member.Member;
+import com.example.organization.domain.member.MemberRepository;
 import com.example.organization.dto.DepartmentDto;
 import com.example.organization.dto.OrganizationDto;
 import com.example.organization.dto.request.DepartmentManipulateRequestDto;
 import com.example.organization.dto.response.DepartmentManipulateResponseDto;
+import com.example.organization.dto.response.OrganizationSearchResponseDto;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrganizationService {
 
     private final DepartmentRepository departmentRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 모든 부서와 멤버 찾기
@@ -72,9 +76,31 @@ public class OrganizationService {
      * @return OrganizationDto
      */
     @Transactional(readOnly = true)
-    public OrganizationDto findAllByKeyword(String searchKeyword) {
-        // TODO: 2021-08-10 개발 중 
-        return null;
+    public OrganizationSearchResponseDto findAllByKeyword(String searchKeyword) {
+        List<Department> departments = departmentRepository.findAllByMemberNameContaining(
+            searchKeyword);
+        if (departments.size() == 0) {
+            throw new IllegalArgumentException("입력하신 keyword에 해당하는 멤버가 없습니다.");
+        }
+        // parent_id로 그룹핑 함
+        Map<Integer, List<OrganizationSearchResponseDto>> groupedByParentId = departments.stream()
+            .map(e -> new OrganizationSearchResponseDto(e.getId(), "", e.getCode(), e.getName(),
+                null,
+                // root는 parent_id 가 null이므로 삼항 연산자로 0 셋팅
+                e.getParent() == null ? 0 : e.getParent().getId(), null, null))
+            .collect(groupingBy(OrganizationSearchResponseDto::getParentId));
+
+        // member만 가져와 동일하게 처리
+        List<Member> members = memberRepository.findAllByNameContaining(searchKeyword);
+        Map<Integer, List<OrganizationSearchResponseDto>> groupedByDeptId = members.stream()
+            .map(e -> new OrganizationSearchResponseDto(e.getId(), "", "", e.getName(),
+                e.getIsManager(), null, e.getDepartment().getId(),
+                e.getSubDepartment() == null ? null : e.getSubDepartment().getId()))
+            .collect(groupingBy(OrganizationSearchResponseDto::getDepartmentId));
+        groupedByParentId.putAll(groupedByDeptId);
+        OrganizationSearchResponseDto rootDto = groupedByParentId.get(0).get(0);
+        addChildren(rootDto, groupedByParentId);
+        return rootDto;
     }
 
     /**
@@ -105,6 +131,19 @@ public class OrganizationService {
         Map<Integer, List<DepartmentDto>> groupedByParentId) {
         // 1. parent_Id로 child를 찾음
         List<DepartmentDto> children = groupedByParentId.get(parent.getId());
+        if (children == null) { // 종료 조건
+            return;
+        }
+        // 2. children 셋팅
+        parent.setChildren(children);
+        // 3. 재귀적으로 children들에 대해서도 수행
+        children.forEach(s -> addChildren(s, groupedByParentId));
+    }
+
+    private void addChildren(OrganizationSearchResponseDto parent,
+        Map<Integer, List<OrganizationSearchResponseDto>> groupedByParentId) {
+        // 1. parent_Id로 child를 찾음
+        List<OrganizationSearchResponseDto> children = groupedByParentId.get(parent.getId());
         if (children == null) { // 종료 조건
             return;
         }
