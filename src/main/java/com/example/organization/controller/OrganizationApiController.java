@@ -89,13 +89,13 @@ public class OrganizationApiController {
     }
 
     @PostMapping("/org/member")
-    public MemberManipulateResponseDto addDepartment(
+    public MemberManipulateResponseDto addMember(
         @RequestBody MemberManipulateRequestDto dto) {
         return memberService.addMember(dto);
     }
 
     @PutMapping("/org/member/{memberId}")
-    public MemberManipulateResponseDto modifyDepartment(@PathVariable Integer memberId,
+    public MemberManipulateResponseDto modifyMember(@PathVariable Integer memberId,
         @RequestBody MemberManipulateRequestDto dto) {
         return memberService.modifyMember(memberId, dto);
     }
