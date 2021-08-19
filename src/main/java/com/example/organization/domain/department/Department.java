@@ -17,7 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 무분별한 new 사용을 막기 위해 protected로 설정
 @Getter
 @Entity
 public class Department {
@@ -42,6 +42,7 @@ public class Department {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "department")
     private List<Member> member = new ArrayList<>();
 
+    // Entity는 new 를 통한 생성보다는 Builder 패턴을 사용
     @Builder
     public Department(String code, String name, Department parent) {
         this.code = code;
@@ -49,6 +50,8 @@ public class Department {
         this.parent = parent;
     }
 
+    // Entity는 되도록이면 Setter 사용을 지양(객체의 일관성을 보장하기 위해)
+    // 메소드를 통해 값 변경 처리
     public void update(String code, String name, Department parent) {
         this.code = code;
         this.name = name;
