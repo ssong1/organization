@@ -21,8 +21,8 @@ public class ControllerExceptionAdvice {
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<Object> badRequestException(IllegalArgumentException e) {
         logger.warn("error", e);
-        DefaultApiException defaultApiException = new DefaultApiException("BAD_REQUEST",
-            e.getMessage());
+        DefaultApiException defaultApiException =
+            new DefaultApiException("BAD_REQUEST", e.getMessage());
         return new ResponseEntity<>(defaultApiException, HttpStatus.BAD_REQUEST);
     }
 
@@ -35,8 +35,8 @@ public class ControllerExceptionAdvice {
     @ExceptionHandler({RuntimeException.class})
     public ResponseEntity<Object> badRequestException(RuntimeException e) {
         logger.warn("error", e);
-        DefaultApiException defaultApiException = new DefaultApiException("INTERNAL_SERVER_ERROR",
-            e.getMessage());
+        DefaultApiException defaultApiException =
+            new DefaultApiException("INTERNAL_SERVER_ERROR", e.getMessage());
         return new ResponseEntity<>(defaultApiException, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
