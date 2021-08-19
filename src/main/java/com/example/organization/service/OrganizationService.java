@@ -77,8 +77,8 @@ public class OrganizationService {
      */
     @Transactional(readOnly = true)
     public OrganizationSearchResponseDto findAllByKeyword(String searchKeyword) {
-        List<Department> departments = departmentRepository.findAllByMemberNameContaining(
-            searchKeyword);
+        List<Department> departments =
+            departmentRepository.findAllByMemberNameContaining(searchKeyword);
         if (departments.size() == 0) {
             throw new IllegalArgumentException("입력하신 keyword에 해당하는 멤버가 없습니다.");
         }
