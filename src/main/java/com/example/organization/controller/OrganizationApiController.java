@@ -8,8 +8,6 @@ import com.example.organization.dto.response.MemberManipulateResponseDto;
 import com.example.organization.service.MemberService;
 import com.example.organization.service.OrganizationService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OrganizationApiController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final OrganizationService organizationService;
     private final MemberService memberService;
 
@@ -33,16 +30,12 @@ public class OrganizationApiController {
         String deptCode = request.getDeptCode(); // 기준 부서코드
         Boolean deptOnly = request.getDeptOnly(); // 부서만
         String searchType = request.getSearchType(); // 검색 대상(dept: 부서, member: 부서원)
-        String searchKeword = request.getSearchKeyword(); // 검색어
-        logger.info("deptCode: " + deptCode);
-        logger.info("deptOnly: " + deptOnly);
-        logger.info("searchType: " + searchType);
-        logger.info("searchKeword: " + searchKeword);
+        String searchKeyword = request.getSearchKeyword(); // 검색어
 
         if (deptOnly && searchType != null) {
             throw new IllegalArgumentException("deptOnly와 searchType 파라미터를 같이 사용할 수 없습니다.");
         }
-        if (searchType != null && searchKeword == null) {
+        if (searchType != null && searchKeyword == null) {
             throw new IllegalArgumentException(
                 "searchType 파라미터를 사용할 경우 searchKeyword 파라미터도 필요합니다.");
         }
@@ -62,9 +55,9 @@ public class OrganizationApiController {
                 }
             } else { // 검색 키워드 조건
                 if ("dept".equals(searchType)) {
-                    return organizationService.findDeptOnlyByKeyword(searchKeword);
+                    return organizationService.findDeptOnlyByKeyword(searchKeyword);
                 } else if ("member".equals(searchType)) {
-                    return organizationService.findAllByKeyword(searchKeword);
+                    return organizationService.findAllByKeyword(searchKeyword);
                 }
             }
             return null;
@@ -89,8 +82,7 @@ public class OrganizationApiController {
     }
 
     @PostMapping("/org/member")
-    public MemberManipulateResponseDto addMember(
-        @RequestBody MemberManipulateRequestDto dto) {
+    public MemberManipulateResponseDto addMember(@RequestBody MemberManipulateRequestDto dto) {
         return memberService.addMember(dto);
     }
 
