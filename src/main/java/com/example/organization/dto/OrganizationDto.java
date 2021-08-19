@@ -26,10 +26,10 @@ public class OrganizationDto {
         this.name = entity.getName();
         this.children = entity.getChildren()
             .stream().map(OrganizationDto::new)
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()); // Department Entity의 children(하위부서)를 dto 리스트로 셋팅
         this.children.addAll(entity.getMember()
             .stream().map(MemberDto::new)
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList())); // Department Entity의 member를 dto 리스트로 셋팅
     }
 
     public OrganizationDto(Integer id, String type, String code, String name, Integer parentId) {
