@@ -20,8 +20,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
         + "  SELECT p.*, c.lvl + 1"
         + "  FROM department p"
         + "  INNER JOIN cte c"
-        + "  ON p.id = c.parent_id"
-        + ")"
+        + "  ON p.id = c.parent_id)"
         + "SELECT DISTINCT id, code, name, parent_id "
         + "FROM cte ORDER BY lvl DESC", nativeQuery = true)
     List<Department> findAllByNameContaining(@Param("searchKeyword") String searchKeyword);
@@ -34,8 +33,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Integer>
         + "  SELECT p.*, c.lvl + 1"
         + "  FROM department p"
         + "  INNER JOIN cte c"
-        + "  ON p.id = c.parent_id"
-        + ")"
+        + "  ON p.id = c.parent_id)"
         + "SELECT DISTINCT c.id, c.code, c.name, c.parent_id "
         + "FROM cte c ORDER BY lvl DESC", nativeQuery = true)
     List<Department> findAllByMemberNameContaining(@Param("searchKeyword") String searchKeyword);
