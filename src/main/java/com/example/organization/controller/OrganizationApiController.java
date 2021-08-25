@@ -25,8 +25,7 @@ public class OrganizationApiController {
     private final MemberService memberService;
 
     @GetMapping(path = "/api/organizations")
-    public Object getOrganizations(
-        @ModelAttribute OrganizationSearchRequestDto request) {
+    public Object getOrganizations(@ModelAttribute OrganizationSearchRequestDto request) {
         String deptCode = request.getDeptCode(); // 기준 부서코드
         Boolean deptOnly = request.getDeptOnly(); // 부서만
         String searchType = request.getSearchType(); // 검색 대상(dept: 부서, member: 부서원)
