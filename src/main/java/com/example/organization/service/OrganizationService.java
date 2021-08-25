@@ -25,56 +25,33 @@ public class OrganizationService {
     private final DepartmentRepository departmentRepository;
     private final MemberRepository memberRepository;
 
-    /**
-     * 모든 부서와 멤버 찾기
-     *
-     * @return OrganizationDto
-     */
+    // 모든 부서와 멤버 찾기
     @Transactional(readOnly = true)
     public OrganizationDto findAll() {
         return new OrganizationDto(departmentRepository.findByParentIdIsNull());
     }
 
-    /**
-     * 모든 부서만 찾기
-     *
-     * @return DepartmentDto
-     */
+    // 모든 부서만 찾기
     @Transactional(readOnly = true)
     public DepartmentDto findDeptOnly() {
         return new DepartmentDto(departmentRepository.findByParentIdIsNull());
     }
 
-    /**
-     * deptCode로 부서와 멤버 찾기
-     *
-     * @param deptCode 부서코드
-     * @return OrganizationDto
-     */
+    // deptCode로 부서와 멤버 찾기
     @Transactional(readOnly = true)
     public OrganizationDto findDeptCode(String deptCode) {
         return new OrganizationDto(departmentRepository.findAllByCode(deptCode)
             .orElseThrow(() -> new IllegalArgumentException("입력하신 deptCode에 해당하는 부서가 없습니다.")));
     }
 
-    /**
-     * deptCode로 부서만 찾기
-     *
-     * @param deptCode 부서코드
-     * @return DepartmentDto
-     */
+    // deptCode로 부서만 찾기
     @Transactional(readOnly = true)
     public DepartmentDto findDeptCodeDeptOnly(String deptCode) {
         return new DepartmentDto(departmentRepository.findAllByCode(deptCode)
             .orElseThrow(() -> new IllegalArgumentException("입력하신 deptCode에 해당하는 부서가 없습니다.")));
     }
 
-    /**
-     * 키워드로 부서와 멤버 찾기
-     *
-     * @param searchKeyword 키워드
-     * @return OrganizationDto
-     */
+    // 키워드로 부서와 멤버 찾기
     @Transactional(readOnly = true)
     public OrganizationSearchResponseDto findAllByKeyword(String searchKeyword) {
         List<Department> departments =
@@ -103,12 +80,7 @@ public class OrganizationService {
         return rootDto;
     }
 
-    /**
-     * 키워드로 부서만 찾기
-     *
-     * @param searchKeyword 키워드
-     * @return DepartmentDto
-     */
+    // 키워드로 부서만 찾기
     @Transactional(readOnly = true)
     public DepartmentDto findDeptOnlyByKeyword(String searchKeyword) {
         List<Department> departments = departmentRepository.findAllByNameContaining(searchKeyword);
@@ -153,12 +125,7 @@ public class OrganizationService {
         children.forEach(s -> addChildren(s, groupedByParentId));
     }
 
-    /**
-     * 부서 추가
-     *
-     * @param dto 부서 추가, 수정, 삭제 요청 dto
-     * @return DepartmentManipulateResponseDto 부서 추가, 수정, 삭제 응답 dto
-     */
+    // 부서 추가
     @Transactional
     public DepartmentManipulateResponseDto addDepartment(DepartmentManipulateRequestDto dto) {
         Department parent = departmentRepository.findById(dto.getParentId())
@@ -179,12 +146,7 @@ public class OrganizationService {
         return dtoCreator(added, "정상적으로 추가되었습니다.");
     }
 
-    /**
-     * 부서 수정
-     *
-     * @param dto 부서 추가, 수정, 삭제 요청 dto
-     * @return DepartmentManipulateResponseDto 부서 추가, 수정, 삭제 응답 dto
-     */
+    // 부서 수정
     @Transactional
     public DepartmentManipulateResponseDto modifyDepartment(Integer deptId,
         DepartmentManipulateRequestDto dto) {
@@ -201,12 +163,7 @@ public class OrganizationService {
         return dtoCreator(target, "정상적으로 수정되었습니다.");
     }
 
-    /**
-     * 부서 삭제
-     *
-     * @param id 부서 id
-     * @return DepartmentManipulateResponseDto 부서 추가, 수정, 삭제 응답 dto
-     */
+    // 부서 삭제
     @Transactional
     public DepartmentManipulateResponseDto deleteDepartment(Integer id) {
         Department target = departmentRepository.findById(id)

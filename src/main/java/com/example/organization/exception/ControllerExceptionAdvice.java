@@ -12,12 +12,7 @@ public class ControllerExceptionAdvice {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /**
-     * IllegalArgumentException 일때만 code: BAD_REQUEST, message: 작성한 메시지
-     *
-     * @param e
-     * @return
-     */
+    // IllegalArgumentException 일때만 code: BAD_REQUEST, message: 작성한 메시지
     @ExceptionHandler({IllegalArgumentException.class})
     public ResponseEntity<Object> badRequestException(IllegalArgumentException e) {
         logger.warn("error", e);
@@ -26,12 +21,7 @@ public class ControllerExceptionAdvice {
         return new ResponseEntity<>(defaultApiException, HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * 나머지 Exception들
-     *
-     * @param e
-     * @return
-     */
+    // 나머지 Exception들
     @ExceptionHandler({RuntimeException.class})
     public ResponseEntity<Object> badRequestException(RuntimeException e) {
         logger.warn("error", e);

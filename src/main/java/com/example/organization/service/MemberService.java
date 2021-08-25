@@ -21,12 +21,7 @@ public class MemberService {
     private final DepartmentRepository departmentRepository;
     private final MemberRepository memberRepository;
 
-    /**
-     * 멤버 추가
-     *
-     * @param dto
-     * @return
-     */
+    // 멤버 추가
     @Transactional
     public MemberManipulateResponseDto addMember(MemberManipulateRequestDto dto) {
         Department department = departmentRepository.findById(dto.getDepartmentId())
@@ -48,12 +43,7 @@ public class MemberService {
         return dtoCreator(added, "정상적으로 추가되었습니다.");
     }
 
-    /**
-     * 멤버 수정
-     *
-     * @param dto
-     * @return
-     */
+    // 멤버 수정
     @Transactional
     public MemberManipulateResponseDto modifyMember(Integer memberId,
         MemberManipulateRequestDto dto) {
@@ -75,12 +65,7 @@ public class MemberService {
         return dtoCreator(target, "정상적으로 수정되었습니다.");
     }
 
-    /**
-     * 멤버 삭제
-     *
-     * @param id
-     * @return
-     */
+    // 멤버 삭제
     @Transactional
     public MemberManipulateResponseDto deleteMember(Integer id) {
         Member target = memberRepository.findById(id)
